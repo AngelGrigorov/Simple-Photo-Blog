@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Photo Blog</title>
+</head>
+<body>
+<h1><a href="https://localhost:8070/login">LOG IN</a></h1>
+<h1><a href="https://localhost:8070/upload">UPLOAD (only when logged in)</a></h1>
+<h1><a href="https://localhost:8070/logout">LOG OUT</a></h1>
+{{range .Pictures}}
+    <img src="{{.}}">
+{{else}}
+    <h1>NO PICTURES</h1>
+{{end}}
+</body>
+</html>
