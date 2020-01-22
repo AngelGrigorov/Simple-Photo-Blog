@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net/http"
 	"github.com/gorilla/sessions"
 	"html/template"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -19,9 +19,9 @@ type Model struct {
 	Pictures []string
 }
 
-func main()  {
+func main() {
 	tpl, err = tpl.ParseGlob("assets/templates/*.gohtml")
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err)
 	}
 
@@ -35,23 +35,23 @@ func main()  {
 	http.ListenAndServeTLS(":8070", "cert.pem", "key.pem", nil)
 }
 
-func index(res http.ResponseWriter, req *http.Request)  {
+func index(res http.ResponseWriter, req *http.Request) {
 	tpl.ExecuteTemplate(res, "index.gohtml", Data)
 }
 
-func login(res http.ResponseWriter, req *http.Request){
+func login(res http.ResponseWriter, req *http.Request) {
 	session, _ := store.Get(req, "session")
 
 	if req.Method == "POST" {
 		password := req.FormValue("password")
-			if password == "secret" {
-				session.Values["logged_in"] = true
-			} else {
-				http.Error(res, "invalid credentials", 401)
-				return
-			}
-			session.Save(req, res)
-			http.Redirect(res, req, "/", 302)
+		if password == "secret" {
+			session.Values["logged_in"] = true
+		} else {
+			http.Error(res, "invalid credentials", 401)
+			return
+		}
+		session.Save(req, res)
+		http.Redirect(res, req, "/", 302)
 	}
 	tpl.ExecuteTemplate(res, "login.gohtml", nil)
 }
@@ -62,9 +62,10 @@ func logout(res http.ResponseWriter, req *http.Request) {
 	session.Save(req, res)
 	http.Redirect(res, req, "/", 302)
 }
+
 var Data Model = getPicturePaths()
 
-func getPicturePaths() Model  {
+func getPicturePaths() Model {
 	files := []string{}
 	filepath.Walk("./", func(path string, fi os.FileInfo, err error) error {
 
@@ -79,7 +80,7 @@ func getPicturePaths() Model  {
 		}
 		return nil
 	})
-	return Model{Pictures:files}
+	return Model{Pictures: files}
 }
 
 func upload(res http.ResponseWriter, req *http.Request) {
@@ -96,7 +97,7 @@ func upload(res http.ResponseWriter, req *http.Request) {
 		}
 		defer src.Close()
 
-		path := "/Users/8770W/Desktop/Simple-Photo-Blog/assets/imgs/"
+		path := "/home/angel/Developer/GoLangProjects/src/Simple-Photo-Blog/assets/imgs/"
 		dst, err := os.Create(path + hdr.Filename)
 		if err != nil {
 			http.Error(res, err.Error(), 500)
@@ -104,9 +105,9 @@ func upload(res http.ResponseWriter, req *http.Request) {
 		}
 		defer dst.Close()
 
-		io.Copy(dst,src)
+		io.Copy(dst, src)
 		Data = getPicturePaths()
-		http.Redirect(res,req,"/", 302)
+		http.Redirect(res, req, "/", 302)
 	}
 	tpl.ExecuteTemplate(res, "upload-file.gohtml", nil)
 }
