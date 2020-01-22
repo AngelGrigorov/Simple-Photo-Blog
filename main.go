@@ -1,11 +1,11 @@
 package main
 
 import (
+	"net/http"
 	"github.com/gorilla/sessions"
 	"html/template"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
