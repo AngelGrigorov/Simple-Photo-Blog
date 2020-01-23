@@ -4,12 +4,39 @@
     <meta charset="UTF-8">
     <title>Simple Photo Blog</title>
 </head>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <body>
-<h1><a href="https://localhost:8070/login">LOG IN</a></h1>
-<h1><a href="https://localhost:8070/upload">UPLOAD (only when logged in)</a></h1>
-<h1><a href="https://localhost:8070/logout">LOG OUT</a></h1>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="https://localhost:8070/">HOME</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="https://localhost:8070/upload">UPLOAD (only when logged in)</a>
+            </li>
+            {{if .IsLogged}}
+            <li class="nav-item">
+                <a class="nav-link" href="https://localhost:8070/logout">LOG OUT</a>
+            </li>
+            {{else}}
+            <li class="nav-item ">
+                <a class="nav-link" href="https://localhost:8070/login">LOG IN</a>
+            </li>
+            {{end}}
+        </ul>
+    </div>
+</nav>
+
 {{range .Pictures}}
-    <img src="{{.}}">
+<marquee width="100%"><div class="text-left">
+    <img src="{{.}}" class="rounded" style="width: 200px; height: 200px;">
+</div>
+</marquee>
 {{else}}
     <h1>NO PICTURES</h1>
 {{end}}

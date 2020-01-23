@@ -17,7 +17,10 @@ var store = sessions.NewCookieStore([]byte("something-very-secret"))
 
 type Model struct {
 	Pictures []string
+	IsLogged bool
 }
+
+var Data Model
 
 func main() {
 	tpl, err = tpl.ParseGlob("assets/templates/*.gohtml")
@@ -36,24 +39,38 @@ func main() {
 }
 
 func index(res http.ResponseWriter, req *http.Request) {
+	session, _ := store.Get(req, "session")
+	if session.Values["logged_in"] == true {
+		Data.IsLogged = true
+	} else {
+		Data.IsLogged = false
+	}
+	Data.Pictures = getPicturePaths()
+
 	tpl.ExecuteTemplate(res, "index.gohtml", Data)
 }
 
 func login(res http.ResponseWriter, req *http.Request) {
 	session, _ := store.Get(req, "session")
-
+	if session.Values["logged_in"] == true {
+		Data.IsLogged = true
+	} else {
+		Data.IsLogged = false
+	}
 	if req.Method == "POST" {
 		password := req.FormValue("password")
 		if password == "secret" {
 			session.Values["logged_in"] = true
 		} else {
 			http.Error(res, "invalid credentials", 401)
+			Data.IsLogged = false
 			return
 		}
 		session.Save(req, res)
 		http.Redirect(res, req, "/", 302)
 	}
-	tpl.ExecuteTemplate(res, "login.gohtml", nil)
+	Data.Pictures = getPicturePaths()
+	tpl.ExecuteTemplate(res, "login.gohtml", Data)
 }
 
 func logout(res http.ResponseWriter, req *http.Request) {
@@ -63,31 +80,31 @@ func logout(res http.ResponseWriter, req *http.Request) {
 	http.Redirect(res, req, "/", 302)
 }
 
-var Data Model = getPicturePaths()
-
-func getPicturePaths() Model {
+func getPicturePaths() []string {
 	files := []string{}
 	filepath.Walk("./", func(path string, fi os.FileInfo, err error) error {
 
 		if fi.IsDir() {
 			return nil
 		}
-
 		path = strings.Replace(path, "//", "/", -1)
-
-		if strings.HasSuffix(path, ".jpg") {
+		if strings.HasSuffix(path, ".png") {
 			files = append(files, path)
 		}
 		return nil
 	})
-	return Model{Pictures: files}
+	return files
 }
 
 func upload(res http.ResponseWriter, req *http.Request) {
 	session, _ := store.Get(req, "session")
-	if session.Values["logged_in"] == false || session.Values["logged_in"] == nil {
+	if session.Values["logged_in"] == true {
+		Data.IsLogged = true
+	} else {
+		Data.IsLogged = false
 		http.Redirect(res, req, "https://localhost:8070/login", 302)
 	}
+	Data.Pictures = getPicturePaths()
 
 	if req.Method == "POST" {
 		src, hdr, err := req.FormFile("my-file")
@@ -106,8 +123,8 @@ func upload(res http.ResponseWriter, req *http.Request) {
 		defer dst.Close()
 
 		io.Copy(dst, src)
-		Data = getPicturePaths()
+		Data.Pictures = getPicturePaths()
 		http.Redirect(res, req, "/", 302)
 	}
-	tpl.ExecuteTemplate(res, "upload-file.gohtml", nil)
+	tpl.ExecuteTemplate(res, "upload-file.gohtml", Data)
 }
