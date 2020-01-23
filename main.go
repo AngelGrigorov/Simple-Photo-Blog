@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"github.com/gorilla/sessions"
 	"html/template"
 	"io"
@@ -21,8 +21,8 @@ type Model struct {
 	IsLogged bool
 }
 type User struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string
+	Password string
 }
 
 var Data Model
@@ -58,6 +58,7 @@ func register(res http.ResponseWriter, req *http.Request) {
 			Username: username,
 			Password: password,
 		}
+		fmt.Println(user)
 		session.Save(req, res)
 		http.Redirect(res, req, "/login", 302)
 	}
@@ -114,7 +115,8 @@ func getPicturePaths() []string {
 		if fi.IsDir() {
 			return nil
 		}
-		path = strings.Replace(path, "//", "/", -1)
+		// path separator replacement fix
+		path = strings.Replace(path, string(filepath.Separator), "/", -1)
 		if strings.HasSuffix(path, ".png") {
 			files = append(files, path)
 		}
@@ -141,7 +143,7 @@ func upload(res http.ResponseWriter, req *http.Request) {
 		}
 		defer src.Close()
 
-		path := "/home/angel/Developer/GoLangProjects/src/Simple-Photo-Blog/assets/imgs/"
+		path := "C:/go-work/src/Simple-Photo-Blog/assets/imgs/"
 		dst, err := os.Create(path + hdr.Filename)
 		if err != nil {
 			http.Error(res, err.Error(), 500)
