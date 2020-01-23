@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gorilla/sessions"
 	"html/template"
 	"io"
@@ -45,6 +44,11 @@ func main() {
 }
 
 func register(res http.ResponseWriter, req *http.Request) {
+	//db, err := sql.Open("sqlite3", "db/db.db")
+	//if err != nil {
+	//	http.Error(res, err.Error(), 500)
+	//	return
+	//}
 	session, _ := store.Get(req, "session")
 	if session.Values["logged_in"] == true {
 		Data.IsLogged = true
@@ -52,13 +56,11 @@ func register(res http.ResponseWriter, req *http.Request) {
 		Data.IsLogged = false
 	}
 	if req.Method == "POST" {
-		password := req.FormValue("password")
-		username := req.FormValue("userName")
-		user := User{
-			Username: username,
-			Password: password,
-		}
-		fmt.Println(user)
+		//password := req.FormValue("password")
+		//username := req.FormValue("userName")
+		//stmt, _ := db.Prepare("INSERT INTO users(username, password) values(?,?)")
+		//result, _ := stmt.Exec(username, password)
+		//fmt.Println(result)
 		session.Save(req, res)
 		http.Redirect(res, req, "/login", 302)
 	}
