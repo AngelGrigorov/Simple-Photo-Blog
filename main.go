@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gorilla/sessions"
 	"html/template"
 	"io"
@@ -19,6 +20,10 @@ type Model struct {
 	Pictures []string
 	IsLogged bool
 }
+type User struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
 
 var Data Model
 
@@ -32,10 +37,32 @@ func main() {
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/upload", upload)
 	http.HandleFunc("/logout", logout)
+	http.HandleFunc("/register", register)
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets"))))
 	http.Handle("/favicon.ico", http.NotFoundHandler())
 
 	http.ListenAndServeTLS(":8070", "cert.pem", "key.pem", nil)
+}
+
+func register(res http.ResponseWriter, req *http.Request) {
+	session, _ := store.Get(req, "session")
+	if session.Values["logged_in"] == true {
+		Data.IsLogged = true
+	} else {
+		Data.IsLogged = false
+	}
+	if req.Method == "POST" {
+		password := req.FormValue("password")
+		username := req.FormValue("userName")
+		user := User{
+			Username: username,
+			Password: password,
+		}
+		session.Save(req, res)
+		http.Redirect(res, req, "/login", 302)
+	}
+	Data.Pictures = getPicturePaths()
+	tpl.ExecuteTemplate(res, "register.gohtml", Data)
 }
 
 func index(res http.ResponseWriter, req *http.Request) {

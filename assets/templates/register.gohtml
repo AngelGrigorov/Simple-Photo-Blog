@@ -6,6 +6,7 @@
 </head>
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -19,29 +20,30 @@
             <li class="nav-item">
                 <a class="nav-link" href="https://localhost:8070/upload">UPLOAD (only when logged in)</a>
             </li>
-            {{if .IsLogged}}
+        {{if .IsLogged}}
             <li class="nav-item">
                 <a class="nav-link" href="https://localhost:8070/logout">LOG OUT</a>
             </li>
-            {{else}}
+        {{else}}
             <li class="nav-item ">
                 <a class="nav-link" href="https://localhost:8070/login">LOG IN</a>
             </li>
-                <li class="nav-item ">
-                    <a class="nav-link" href="https://localhost:8070/register">REGISTER</a>
-                </li>
-            {{end}}
+            <li class="nav-item ">
+                <a class="nav-link" href="https://localhost:8070/register">REGISTER</a>
+            </li>
+        {{end}}
         </ul>
     </div>
 </nav>
-
-{{range .Pictures}}
-<marquee width="100%"><div class="text-left">
-    <img src="{{.}}" class="rounded" style="width: 200px; height: 200px;">
-</div>
-</marquee>
-{{else}}
-    <h1>NO PICTURES</h1>
-{{end}}
+<h1>REGISTER</h1>
+<form method="post" action="https://localhost:8070/register">
+    <h3>Username</h3>
+    <input type="text" name="userName" id="userName">
+    <h3>Password</h3>
+    <input type="text" name="password" id="password">
+    <br>
+    <input type="submit">
+    <input type="submit" name="index" value="Back">
+</form>
 </body>
 </html>
