@@ -1,7 +1,9 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/gorilla/sessions"
+	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"io"
 	"log"
@@ -44,11 +46,11 @@ func main() {
 }
 
 func register(res http.ResponseWriter, req *http.Request) {
-	//db, err := sql.Open("sqlite3", "db/db.db")
-	//if err != nil {
-	//	http.Error(res, err.Error(), 500)
-	//	return
-	//}
+	db, err := sql.Open("sqlite3", "db/db.db")
+	if err != nil {
+		http.Error(res, err.Error(), 500)
+		return
+	}
 	session, _ := store.Get(req, "session")
 	if session.Values["logged_in"] == true {
 		Data.IsLogged = true
@@ -56,11 +58,15 @@ func register(res http.ResponseWriter, req *http.Request) {
 		Data.IsLogged = false
 	}
 	if req.Method == "POST" {
-		//password := req.FormValue("password")
-		//username := req.FormValue("userName")
-		//stmt, _ := db.Prepare("INSERT INTO users(username, password) values(?,?)")
-		//result, _ := stmt.Exec(username, password)
-		//fmt.Println(result)
+		password := req.FormValue("password")
+		username := req.FormValue("userName")
+		stmt, err := db.Prepare("INSERT INTO users (username, password) values(?,?)")
+		if err != nil {
+			http.Error(res, err.Error(), 500)
+			return
+		}
+		stmt.Exec(username, password)
+
 		session.Save(req, res)
 		http.Redirect(res, req, "/login", 302)
 	}
@@ -81,6 +87,11 @@ func index(res http.ResponseWriter, req *http.Request) {
 }
 
 func login(res http.ResponseWriter, req *http.Request) {
+	db, err := sql.Open("sqlite3", "db/db.db")
+	if err != nil {
+		http.Error(res, err.Error(), 500)
+		return
+	}
 	session, _ := store.Get(req, "session")
 	if session.Values["logged_in"] == true {
 		Data.IsLogged = true
@@ -89,15 +100,32 @@ func login(res http.ResponseWriter, req *http.Request) {
 	}
 	if req.Method == "POST" {
 		password := req.FormValue("password")
-		if password == "secret" {
-			session.Values["logged_in"] = true
-		} else {
-			http.Error(res, "invalid credentials", 401)
-			Data.IsLogged = false
+		username := req.FormValue("userName")
+
+		rows, err := db.Query("SELECT username, password FROM users")
+		if err != nil {
+			http.Error(res, err.Error(), 500)
 			return
 		}
-		session.Save(req, res)
-		http.Redirect(res, req, "/", 302)
+
+		var u string
+		var p string
+
+		for rows.Next() {
+			err = rows.Scan(&u, &p)
+			if err != nil {
+				http.Error(res, err.Error(), 500)
+				return
+			}
+
+			if username == u && password == p {
+				session.Values["logged_in"] = true
+				session.Save(req, res)
+				http.Redirect(res, req, "/", 302)
+			}
+		}
+
+		rows.Close() //good habit to close
 	}
 	Data.Pictures = getPicturePaths()
 	tpl.ExecuteTemplate(res, "login.gohtml", Data)
@@ -145,7 +173,7 @@ func upload(res http.ResponseWriter, req *http.Request) {
 		}
 		defer src.Close()
 
-		path := "C:/go-work/src/Simple-Photo-Blog/assets/imgs/"
+		path := "/home/angel/Developer/GoLangProjects/src/Simple-Photo-Blog/assets/imgs/"
 		dst, err := os.Create(path + hdr.Filename)
 		if err != nil {
 			http.Error(res, err.Error(), 500)

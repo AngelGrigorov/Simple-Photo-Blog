@@ -1,49 +1,91 @@
 <!DOCTYPE html>
-<html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="unititled">
+    <meta name="keywords" content="HTML5 Crowdfunding Profile Template">
+    <meta name="author" content="Audain Designs">
+    <link rel="shortcut icon" href="favicon.ico">
     <title>Simple Photo Blog</title>
+
+
+    <!-- Gobal CSS -->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Template CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+
+    <!--Fonts-->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!--Google Analytics-->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-12345678-9', 'auto');
+        ga('send', 'pageview');
+
+    </script>
 </head>
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
 <body>
+<!--header-->
+<header class="header">
+    <div class="container">
+        <div class="row">
+            <div class="goal-summary pull-left">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="https://localhost:8070/">HOME</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item">
-                <a class="nav-link" href="https://localhost:8070/upload">UPLOAD (only when logged in)</a>
-            </li>
-        {{if .IsLogged}}
-            <li class="nav-item">
-                <a class="nav-link" href="https://localhost:8070/logout">LOG OUT</a>
-            </li>
-        {{else}}
-            <li class="nav-item ">
-                <a class="nav-link" href="https://localhost:8070/login">LOG IN</a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" href="https://localhost:8070/register">REGISTER</a>
-            </li>
-        {{end}}
-        </ul>
+                <div class="reminder last">
+                    <a class="navbar-brand" href="https://localhost:8070/">HOME</a>
+                </div>
+            {{if .IsLogged}}
+                <div class="reminder last">
+                    <a class="nav-link" href="https://localhost:8070/upload">UPLOAD PHOTO</a>
+                </div>
+                <div class="reminder last">
+                    <a class="nav-link" href="https://localhost:8070/logout">LOG OUT</a>
+                </div>
+            {{else}}
+                <div class="reminder last">
+                    <a class="nav-link" href="https://localhost:8070/login">LOG IN</a>
+                </div>
+                <div class="reminder last">
+                    <a class="nav-link" href="https://localhost:8070/register">REGISTER</a>
+                </div>
+            {{end}}
+            </div>
+        </div>
     </div>
-</nav>
-<h1>REGISTER</h1>
-<form method="post" action="https://localhost:8070/register">
-    <h3>Username</h3>
-    <input type="text" name="userName" id="userName">
-    <h3>Password</h3>
-    <input type="text" name="password" id="password">
+</header>
+<!--/header-->
+<div class="comment-form">
+    <h1>REGISTER</h1>
     <br>
-    <input type="submit">
-    <input type="submit" name="index" value="Back">
-</form>
+    <form method="post" action="https://localhost:8070/register">
+        <h3>Username</h3>
+        <input class="comment-input" type="text" name="userName" id="userName" >
+        <h3>Password</h3>
+        <input class="comment-input" type="text" name="password" id="password" >
+        <br><br>
+        <button class="btn btn-comment" type="submit">REGISTER</button>
+    </form>
+
+</div>
+
 </body>
 </html>
