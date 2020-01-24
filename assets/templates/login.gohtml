@@ -20,7 +20,7 @@
     <link href="assets/css/style.css" rel="stylesheet">
 
     <!--Fonts-->
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.0/css/all.min.css" rel="stylesheet">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 
@@ -51,7 +51,7 @@
             <div class="goal-summary pull-left">
 
                 <div class="reminder last">
-                    <a class="navbar-brand" href="https://localhost:8070/">HOME</a>
+                    <a class="nav-link" href="https://localhost:8070/"><i class="fas fa-home fa-3x"></i></a>
                 </div>
             {{if .IsLogged}}
                 <div class="reminder last">
@@ -87,5 +87,13 @@
         </form>
 
 </div>
+<footer class="footer" style="position: absolute">
+
+    <div class="container">
+        <div class="row">
+            <span class="copyright">Created by <a href="https://github.com/AngelGrigorov" target="_blank">Angel Grigorov</a> 2020</span>
+        </div>
+    </div>
+</footer>
 </body>
 </html>

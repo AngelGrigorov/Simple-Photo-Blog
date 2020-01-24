@@ -1,17 +1,15 @@
-/*!
- * Temlate Name: Launch
- * Version: 1.0
- * Author: Justin Audain
- * License: Creative Commons Attribution 3.0 License
- * Website: http://themes.audaindesigns.com
- */
+
 
 /*-Base-*/
-
+html,
 body {
+	margin:0;
+	padding:0;
+	height:100%;
 	background-color:#ECEBEB;
 	font-family: 'Open Sans', sans-serif;
 }
+
 p {
 	color:#A7A7A7;
 }
@@ -415,9 +413,12 @@ a {
 
 /*-Footer-*/
 .footer {
+	bottom:0;
+	width: 100%;
 	background-color: #85AD90;
 	padding: 10px;
 	text-align:center;
+
 }
 .copyright {
 	color:#F7F7F7;
