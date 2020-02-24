@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/gorilla/sessions"
 	_ "github.com/mattn/go-sqlite3"
 	"html/template"
@@ -18,8 +19,10 @@ var tpl *template.Template
 var store = sessions.NewCookieStore([]byte("something-very-secret"))
 
 type Model struct {
-	Pictures []string
-	IsLogged bool
+	Pictures         []string
+	IsLogged         bool
+	Username         string
+	FirstAndLastName string
 }
 
 var Data Model
@@ -56,14 +59,17 @@ func register(res http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" {
 		password := req.FormValue("password")
 		username := req.FormValue("userName")
-		stmt, err := db.Prepare("INSERT INTO users (username, password) values(?,?)")
+		firstName := req.FormValue("first_name")
+		lastName := req.FormValue("last_name")
+		stmt, err := db.Prepare("INSERT INTO users (username, password, first_name, last_name) values(?,?,?,?)")
 		if err != nil {
 			http.Error(res, err.Error(), 500)
 			return
 		}
-		stmt.Exec(username, password)
+		stmt.Exec(username, password, firstName, lastName)
 
 		session.Save(req, res)
+
 		http.Redirect(res, req, "/login", 302)
 	}
 	Data.Pictures = getPicturePaths()
@@ -78,7 +84,7 @@ func index(res http.ResponseWriter, req *http.Request) {
 		Data.IsLogged = false
 	}
 	Data.Pictures = getPicturePaths()
-
+	fmt.Println(Data)
 	tpl.ExecuteTemplate(res, "index.gohtml", Data)
 }
 
@@ -98,7 +104,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 		password := req.FormValue("password")
 		username := req.FormValue("userName")
 
-		rows, err := db.Query("SELECT username, password FROM users")
+		rows, err := db.Query("SELECT username, password, first_name, last_name FROM users")
 		if err != nil {
 			http.Error(res, err.Error(), 500)
 			return
@@ -106,9 +112,11 @@ func login(res http.ResponseWriter, req *http.Request) {
 
 		var u string
 		var p string
+		var fN string
+		var lN string
 
 		for rows.Next() {
-			err = rows.Scan(&u, &p)
+			err = rows.Scan(&u, &p, fN, lN)
 			if err != nil {
 				http.Error(res, err.Error(), 500)
 				return
@@ -117,6 +125,8 @@ func login(res http.ResponseWriter, req *http.Request) {
 			if username == u && password == p {
 				session.Values["logged_in"] = true
 				session.Save(req, res)
+				Data.Username = u
+				Data.FirstAndLastName = fN + " " + lN
 				http.Redirect(res, req, "/", 302)
 			}
 		}
@@ -152,6 +162,7 @@ func getPicturePaths() []string {
 }
 
 func upload(res http.ResponseWriter, req *http.Request) {
+
 	session, _ := store.Get(req, "session")
 	if session.Values["logged_in"] == true {
 		Data.IsLogged = true

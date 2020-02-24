@@ -73,11 +73,23 @@
     </div>
 </header>
 <!--/header-->
-<h1>UPLOAD FILE</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="my-file">
-        <input type="submit">
-    </form>
+
+<div class="comment-form">
+    <h1>UPLOAD FILE</h1>
+
+        <form method="post" enctype="multipart/form-data">
+            <h3>Names</h3>
+            <input class="comment-input" type="text" name="author" id="author" value="{{.FirstAndLastName}}">
+            <br><br>
+            <input  type="file" name="my-file" style="display: inline">
+            <br><br>
+            <h3>Description</h3>
+
+            <input class="comment-input" type="text" name="description" id="description" >
+            <br><br>
+            <input type="submit">
+        </form>
+</div>
 <footer class="footer" style="position: absolute">
     <div class="container">
         <div class="row">
